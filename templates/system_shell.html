@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Shell</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+        .shell-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 400px;
+        }
+        .shell-container h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .shell-container input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .shell-container input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .shell-container input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .result, .error {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: left;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        .error {
+            color: #dc3545;
+        }
+        .top-links {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .top-links a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .top-links a:hover {
+            background-color: #0056b3;
+        }
+        .top-right {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .top-right a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .top-right a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-links">
+        <a href="/logout" class="logout-link">Logout</a>
+    </div>
+    <div class="top-right">
+        <a href="/view_posts" class="posts-link">Back to Posts</a>
+    </div>
+    <div class="shell-container">
+        <h2>System Shell</h2>
+        <form method="POST" action="/system_shell">
+            <input type="text" name="command" placeholder="Enter command" required>
+            <input type="submit" value="Execute">
+        </form>
+        {% if result %}
+        <div class="result">
+            <pre>{{ result }}</pre>
+        </div>
+        {% endif %}
+        {% if error %}
+        <div class="error">
+            <pre>{{ error }}</pre>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

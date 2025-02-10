@@ -1,0 +1,68 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.login-container, .message-container, .home-container, .success-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 350px;
+}
+.login-container h2, .message-container h2, .home-container h1, .success-container h1 {
+    margin-top: 0;
+    color: #333;
+}
+.login-container input[type="text"], .login-container input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 15px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+.login-container input[type="submit"], .message-container a, .home-container a, .success-container a {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+.login-container input[type="submit"]:hover, .message-container a:hover, .home-container a:hover, .success-container a:hover {
+    background-color: #0056b3;
+}
+.login-container .footer {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #777;
+}
+.login-container .footer a {
+    color: #007BFF;
+    text-decoration: none;
+}
+.login-container .footer a:hover {
+    text-decoration: underline;
+}
+.success-container pre {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: left;
+    overflow-x: auto;
+}
+.message-container h2 {
+    color: #ff0000;
+}
+.message-container p {
+    margin: 20px 0;
+}
