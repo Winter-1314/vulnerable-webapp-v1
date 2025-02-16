@@ -19,9 +19,7 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
 def add_default_users(cursor):
     # Add default users
-    cursor.execute("INSERT INTO users (username, password) VALUES ('admin', 'secret')")
-    cursor.execute("INSERT INTO users (username, password) VALUES ('user1', 'password1')")
-    cursor.execute("INSERT INTO users (username, password) VALUES ('user2', 'password2')")
+    cursor.execute("INSERT INTO users (username, password) VALUES ('admin', '{os.urandom(24)}')")
 
 def init_db(add_defaults=True):
     conn = sqlite3.connect('database.db')
@@ -68,18 +66,22 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
         
-        conn = sqlite3.connect('database.db')
-        cursor = conn.cursor()
-        # Unsafe SQL query using string concatenation
-        query = f"SELECT * FROM users WHERE username = '{username}' AND (password = '{password}')"
-        cursor.execute(query)
-        user = cursor.fetchone()
-        conn.close()
-        
-        if user:
-            session['username'] = username  # Store username in session
-            return redirect(url_for('view_posts'))
-        return render_template("invalid_credentials.html")
+        try:
+            conn = sqlite3.connect('database.db')
+            cursor = conn.cursor()
+            # Unsafe SQL query using string concatenation
+            query = f"SELECT * FROM users WHERE username = '{username}' AND (password = '{password}')"
+            cursor.execute(query)
+            user = cursor.fetchone()
+            conn.close()
+            
+            if user:
+                session['username'] = username  # Store username in session
+                return redirect(url_for('view_posts'))
+            return render_template("invalid_credentials.html")
+        except Exception as e:
+            logging.error(f"Database error: {e}")
+            return render_template("error.html", error=str(e) + "\n" + query , back_url=url_for('login'))
     return "Send a POST request with 'username' and 'password'."
 
 @app.route("/logout")
@@ -93,7 +95,7 @@ def system_shell():
         return redirect(url_for('login'))
     
     if session['username'] != 'admin':
-        return "Access denied", 403
+        return render_template("error.html", error="Access denied", back_url=url_for('view_posts')), 403
     
     result = None
     error = None
@@ -114,6 +116,7 @@ def system_shell():
         except subprocess.CalledProcessError as e:
             logging.error(f"Command execution failed: {e}")
             error = e.output.decode('utf-8')
+            return render_template("error.html", error=error, back_url=url_for('system_shell'))
     
     return render_template("system_shell.html", result=result, error=error)
 
@@ -121,6 +124,9 @@ def system_shell():
 def add_post():
     if 'username' not in session:
         return redirect(url_for('login'))
+    
+    if session['username'] == 'admin':
+        return render_template("error.html", error="Admins cannot add posts", back_url=url_for('view_posts')), 403
     
     content = request.form.get("content")
     username = session['username']
@@ -144,7 +150,7 @@ def add_post():
         return redirect(url_for('view_posts'))
     except sqlite3.Error as e:
         logging.error(f"Database error: {e}")
-        return "Internal Server Error", 500
+        return render_template("error.html", error=str(e), back_url=url_for('view_posts'))
 
 @app.route("/view_posts")
 def view_posts():
