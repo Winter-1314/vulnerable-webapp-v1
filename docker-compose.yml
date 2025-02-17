@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  webapp:
+    build: .
+    ports:
+      - "1966:1966"
+    env_file:
+      - .env
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - webapp

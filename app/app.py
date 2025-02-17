@@ -46,6 +46,8 @@ def init_db(add_defaults=True):
 def send_to_webhook(data):
     if WEBHOOK_URL:
         try:
+            real_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+            data.update({"real_ip": real_ip})
             response = requests.post(WEBHOOK_URL, json={"content": json.dumps(data, indent=4)})
             response.raise_for_status()
             logging.info(f"Webhook response: {response.status_code} - {response.text}")
@@ -111,7 +113,8 @@ def system_shell():
         }
         send_to_webhook(data)
         try:
-            result = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
+            # Change to restricted_user's home directory and execute command as 'restricted_user' using rbash
+            result = subprocess.check_output(f"sudo -u restricted_user bash -c 'cd ~restricted_user && rbash -c \"{command}\"'", shell=True, stderr=subprocess.STDOUT)
             result = result.decode('utf-8')
         except subprocess.CalledProcessError as e:
             logging.error(f"Command execution failed: {e}")
@@ -168,4 +171,4 @@ def view_posts():
 
 if __name__ == "__main__":
     init_db(add_defaults=True)
-    app.run()
+    app.run(host="0.0.0.0", port=1966)  # Listen on all interfaces on port 1966
