@@ -1,5 +1,5 @@
 .env
-flag.txt
+unknown.txt
 .htpasswd
 certs/
 

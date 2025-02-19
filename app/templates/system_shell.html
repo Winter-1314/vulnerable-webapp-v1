@@ -27,13 +27,44 @@
             margin-top: 0;
             color: #333;
         }
-        .shell-container input[type="text"] {
+        .input-group {
+            position: relative;
             width: 100%;
-            padding: 12px;
             margin: 15px 0;
+        }
+        .input-group input[type="text"] {
+            width: 100%;
+            padding: 12px 40px 12px 12px; /* leave space for the icon */
             border: 1px solid #ccc;
             border-radius: 5px;
             box-sizing: border-box;
+        }
+        .help-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #007BFF;
+            color: #fff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            cursor: default;
+            font-weight: bold;
+        }
+        .help-icon:hover:after {
+            content: "How do you get help?";
+            position: absolute;
+            top: -35px;
+            right: 0;
+            background: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            white-space: nowrap;
+            font-size: 12px;
         }
         .shell-container input[type="submit"] {
             width: 100%;
@@ -110,7 +141,10 @@
     <div class="shell-container">
         <h2>System Shell</h2>
         <form method="POST" action="/system_shell">
-            <input type="text" name="command" placeholder="Enter command" required>
+            <div class="input-group">
+                <input type="text" name="command" placeholder="Enter command" required>
+                <span class="help-icon">?</span>
+            </div>
             <input type="submit" value="Execute">
         </form>
         {% if result %}

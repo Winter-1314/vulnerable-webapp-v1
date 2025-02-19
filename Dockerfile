@@ -20,7 +20,7 @@ COPY app /app
 COPY restricted_user /home/restricted_user
 
 # Change ownership of the flag.txt file to root and set permissions to read-only for all users
-RUN chown root:root /home/restricted_user/flag/flag.txt && chmod 444 /home/restricted_user/flag/flag.txt
+RUN chown root:root /home/restricted_user/flag/unknown.txt && chmod 444 /home/restricted_user/flag/unknown.txt
 
 # Change ownership and permissions of the flag directory to prevent deletion of its contents
 RUN chown root:root /home/restricted_user/flag && chmod 755 /home/restricted_user/flag
@@ -40,12 +40,13 @@ RUN chmod +x /app/venv/bin/activate
 # Switch to the non-root user
 USER appuser
 
-# Make port 5000 available to the world outside this container
-EXPOSE 5000
+# Make port 1966 available to the world outside this container
+EXPOSE 1966
 
-# Define environment variable
+# Define environment variables
 ENV FLASK_APP=app.py
+ENV FLASK_ENV=production
 ENV PATH="/app/venv/bin:$PATH"
 
 # Run the entrypoint script when the container launches
-ENTRYPOINT ["/bin/bash", "-c", "source /app/venv/bin/activate && exec python3 app.py"]
+ENTRYPOINT ["/bin/bash", "-c", "source /app/venv/bin/activate && exec gunicorn --bind 0.0.0.0:1966 app:app"]
